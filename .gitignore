@@ -1,0 +1,3 @@
+/.vscode
+/src/vendor/*
+/docker/volumes/*

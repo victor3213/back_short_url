@@ -1,0 +1,15 @@
+{
+    "name": "short/url",
+    "autoload": {
+        "files": [
+            "Configuration/Config.php",
+			"API/ApiWeb.php",
+			"Controllers/ShortUrlController.php",
+			"DataBase/Mysql.php",
+			"Repository/Url.php",
+			"Controllers/User.php",
+			"Repository/UserRepository.php"
+
+        ]
+    }
+}
