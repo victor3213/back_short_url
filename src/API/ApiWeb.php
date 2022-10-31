@@ -13,15 +13,18 @@ class ApiWeb
     function __construct($dataGet, $dataPost)
     {
         $dataPost = json_decode($dataPost, true);
-        $this->action = isset($dataPost['action']) ? $dataPost['action'] : null;
+        $data = (empty($dataGet)) ? $dataPost : $dataGet;
+        $this->action = isset($data['action']) ? $data['action'] : null;
         
         switch ($this->action) {
             case "getShortUrl":
-                $this->execute(new ShortUrlController(), $dataPost);
+            case "getUrls":
+                $this->execute(new ShortUrlController(), $data);
                 break;
             case "loginUser":
             case "registerUser":
-                $this->execute(new User(), $dataPost);
+            case "getAllUsers":
+                $this->execute(new User(), $data);
                 break;
             default:
                 $this->result = ['Error' => 'This action ' . $this->action . ' is not valid'];

@@ -83,4 +83,21 @@ class ShortUrlController
             'Message' => 'Fatal Error' 
         ];
     }
+
+    public function getUrls($data)
+    {
+        $allUrls = $this->url->getAllUrls($data);
+        // var_dump($allUrls);exit;
+        if($allUrls == false){
+            return [
+                'Status' => 'Error',
+                'Message' => 'There are no data' 
+            ];
+        }
+        return [
+            'Status' => 'Success',
+            'Message' => 'Or found ' . $allUrls['count'] . ' data',
+            'data' => $allUrls
+        ];
+    }
 }

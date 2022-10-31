@@ -41,8 +41,67 @@ class User
         $user = $this->userRep->loginUser($data);
 
         if($user == false){
-            return ['Error' => 'Sorry but, you are not ours, the password or login is wrong'];
+            return [
+                'Status' => 'Error',
+                'Message' => "Can't registrate you in my sistem",
+            ];
         }
-        return ['Success' => 'Usere Loged'];
+           
+        return [
+            'Status' => 'Success',
+            'Message' => 'Usere Loged',
+            'data' => $user
+        ];
+    }
+
+    public function getAllUsers($data)
+    {
+        if(!$this->userRep->checkIfIsAdmin($data['userId'])){
+            return [
+                'Status' => 'Error',
+                'Message' => "You are not an admin and you cannot see the data",
+            ];
+        }
+
+        $users = $this->userRep->getAllUsers($data);
+        if($users == false){
+            return [
+                'Status' => 'Error',
+                'Message' => "There are no other users",
+            ];
+        }
+        
+        $result = [];
+        $result['count'] = count($users);
+        $result['data'] = $users;
+        
+        return [
+            'Status' => 'Success',
+            'Message' => 'Or found users',
+            'Data' => $result
+        ];
+    }
+
+    public function updataDataAboutUser($data)
+    {
+        if(!$this->userRep->checkIfIsAdmin($data['userId'])){
+            return [
+                'Status' => 'Error',
+                'Message' => "You are not an admin and you cannot update some data",
+            ];
+        }
+
+        $updatedData = $this->userRep->updateDataAboutUser($data);
+        if($updatedData){
+            return [
+                'Status' => 'Success',
+                'Message' => "The data has been updated",
+            ];
+        }
+
+        return [
+            'Status' => 'Error',
+            'Message' => "The data has not been updated",
+        ];
     }
 }
