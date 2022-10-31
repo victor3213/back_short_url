@@ -43,16 +43,12 @@ class Url
     public function getAllUrls($data)
     {
         $bonusPratameter = '';
-        // var_dump($data);
+
         if(isset($data['userId']) && $data['all'] == false){
             $bonusPratameter .= "WHERE `UserUrl`.`idUser` = '" . $data['userId']. "'" ;
         }
-        $offset = '';
-        if(isset($data['offset']) ){
-            $offset = ' OFFSET ' . $data['offset'];
-        }
 
-        $sql = "SELECT * FROM `Url` INNER JOIN `UserUrl` ON `Url`.`id` = `UserUrl`.`idUrl` " . $bonusPratameter . " LIMIT 10 " . $offset . ";";
+        $sql = "SELECT * FROM `Url` INNER JOIN `UserUrl` ON `Url`.`id` = `UserUrl`.`idUrl` " . $bonusPratameter . ";";
         $data = Mysql::fromMysqlInArray(Mysql::exec($sql));
 
         $sqlCount = $sql = "SELECT * FROM `Url` INNER JOIN `UserUrl` ON `Url`.`id` = `UserUrl`.`idUrl` " . $bonusPratameter . ";";

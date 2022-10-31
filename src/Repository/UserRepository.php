@@ -55,9 +55,9 @@ class UserRepository
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
-    public function getAllUsers($data)
+    public function getAllUsers()
     {
-        $sql = "SELECT * FROM `Users` WHERE `Users`.`id` != '" . $data['userId'] . "'  LIMIT " . $data['limit'] . " OFFSET " . $data['offset'] . ";";
+        $sql = "SELECT * FROM `Users` ;";
         $resultExec = Mysql::exec($sql);
         $result = Mysql::fromMysqlInArray($resultExec);
 
