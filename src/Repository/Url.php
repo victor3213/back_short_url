@@ -13,11 +13,7 @@ class Url
                     FROM `Url` 
                     INNER JOIN `UserUrl`  ON `Url`.`id` = `UserUrl`.`idUser` 
                     WHERE `UserUrl`.`idUser` = " . $data['userId'] . " AND `Url`.`originUrl` = '" . $data['longUrl'] ."';";
-        // $sql = "show tables;";
-        // var_dump($sql);                    
         $result = Mysql::exec($sql);
-        // var_dump($result);
-        echo '------------------';
         $data = Mysql::fromMysqlInArray($result);
         if(!empty($data)){
             return $data[0];
