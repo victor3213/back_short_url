@@ -9,5 +9,8 @@ class Config
     static $dbPass = 'KeePassa003#';
     static $dbName = 'short_url';
 
-    static $limitPerPage = 20;
+    static $host = '167.235.192.111';
+    static $port = '90';
+
+    static $hostPort = 'http://167.235.192.111:90/';
 }

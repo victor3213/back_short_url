@@ -12,14 +12,19 @@ class ApiWeb
 
     function __construct($dataGet, $dataPost)
     {
-        $this->action = isset($dataGet['action']) ? $dataGet['action'] : null;
+        $dataPost = json_decode($dataPost, true);
+        $data = (empty($dataGet)) ? $dataPost : $dataGet;
+        $this->action = isset($data['action']) ? $data['action'] : null;
+        
         switch ($this->action) {
             case "getShortUrl":
-                $this->execute(new ShortUrlController(), $dataGet);
+            case "getUrls":
+                $this->execute(new ShortUrlController(), $data);
                 break;
             case "loginUser":
             case "registerUser":
-                $this->execute(new User(), $dataGet);
+            case "getAllUsers":
+                $this->execute(new User(), $data);
                 break;
             default:
                 $this->result = ['Error' => 'This action ' . $this->action . ' is not valid'];
@@ -30,18 +35,17 @@ class ApiWeb
 
     public function execute($class, $l)
     {
-        $action= $this->action;
-        if(method_exists($class, $action)){
+        $action = $this->action;
+        if (method_exists($class, $action)) {
             $this->result = $class->$action($l);
-        }else{
+        } else {
             $this->result = ['Error' => 'This methond ' . $this->action . 'not exist' ];
-            // log in bd
         }
     }
 
     public function response()
     {
-        // header("Content-type: application/json; charset=utf-8");
-        echo json_encode($this->result,JSON_UNESCAPED_UNICODE);
+        // header("Content-type: application/json");
+        echo json_encode($this->result);
     }
 }

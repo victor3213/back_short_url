@@ -3,6 +3,7 @@
 namespace SRC\Controller;
 
 use SRC\Repository\Url;
+use SRC\Configuration\Config;
 
 class ShortUrlController
 {
@@ -31,7 +32,7 @@ class ShortUrlController
         $prepareData = [
             'userId' => $userId,
             'nameShortUrl' => $nameShortUrl,
-            'longUrl' => $data['longUrl']
+            'longUrl' => Config::$host . $data['longUrl']
         ];
 
         $result = $this->checkUrl($prepareData);
@@ -62,13 +63,41 @@ class ShortUrlController
     public function checkUrl($data)
     {
         if($existentUrl = $this->url->checkUrl($data)){
-            return ['Warning' => 'This url exist '. $existentUrl['shortUrl'] ];
+            return [
+                'Status' => 'Warning',
+                'Message' => 'This url exist '. $existentUrl['shortUrl'],
+                'data' =>  Config::$hostPort . $existentUrl['shortUrl'] 
+            ];
         }
         
         $newUrl = $this->url->insertNewUrl($data);
         if($newUrl !== false){
-            return ['Success' => 'Your link now is ' . $newUrl];
-        } 
-        return ['Error' => 'Fatal Error' ];
+            return [
+                'Status' => 'Success',
+                'Message' => 'Your link now is ' . $newUrl,
+                'data' => Config::$hostPort . $newUrl
+            ];
+        }
+        return [
+            'Status' => 'Error',
+            'Message' => 'Fatal Error' 
+        ];
+    }
+
+    public function getUrls($data)
+    {
+        $allUrls = $this->url->getAllUrls($data);
+        // var_dump($allUrls);exit;
+        if($allUrls == false){
+            return [
+                'Status' => 'Error',
+                'Message' => 'There are no data' 
+            ];
+        }
+        return [
+            'Status' => 'Success',
+            'Message' => 'Or found ' . $allUrls['count'] . ' data',
+            'data' => $allUrls
+        ];
     }
 }
