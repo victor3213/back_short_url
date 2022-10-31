@@ -63,7 +63,7 @@ class User
             ];
         }
 
-        $users = $this->userRep->getAllUsers($data);
+        $users = $this->userRep->getAllUsers();
         if($users == false){
             return [
                 'Status' => 'Error',
