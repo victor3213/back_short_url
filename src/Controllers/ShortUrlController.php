@@ -19,7 +19,6 @@ class ShortUrlController
         if(!$this->checkUrlIsValid($data['longUrl'])){
             return ['Error' => 'The Url is not valid'];
         }
-
         $nameShortUrl = '';
         if(isset($data['typeOfUrl'])){
             if($data['typeOfUrl'] == 'simple'){
@@ -32,7 +31,7 @@ class ShortUrlController
         $prepareData = [
             'userId' => $userId,
             'nameShortUrl' => $nameShortUrl,
-            'longUrl' => Config::$host . $data['longUrl']
+            'longUrl' => $data['longUrl']
         ];
 
         $result = $this->checkUrl($prepareData);
@@ -99,5 +98,16 @@ class ShortUrlController
             'Message' => 'Or found ' . $allUrls['count'] . ' data',
             'data' => $allUrls
         ];
+    }
+
+    public function openOriginalLink()
+    {
+        $originalLink = $this->url->getOriginalLink();
+        if ($originalLink == false) {
+            header("Location: https://www.google.com/");
+        }else{
+            header("Location: ".  $originalLink);
+        }
+        exit;
     }
 }
