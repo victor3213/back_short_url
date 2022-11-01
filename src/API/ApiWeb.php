@@ -15,22 +15,27 @@ class ApiWeb
         $dataPost = json_decode($dataPost, true);
         $data = (empty($dataGet)) ? $dataPost : $dataGet;
         $this->action = isset($data['action']) ? $data['action'] : null;
-        
-        switch ($this->action) {
-            case "getShortUrl":
-            case "getUrls":
-                $this->execute(new ShortUrlController(), $data);
-                break;
-            case "loginUser":
-            case "registerUser":
-            case "getAllUsers":
-                $this->execute(new User(), $data);
-                break;
-            default:
-                $this->action = 'openOriginalLink';
-                $this->execute(new ShortUrlController(), $data);
-                break;
+        if(substr($_SERVER['DOCUMENT_URI'], 1) == 'api'){
+            switch ($this->action) {
+                case "getShortUrl":
+                case "getUrls":
+                    $this->execute(new ShortUrlController(), $data);
+                    break;
+                case "loginUser":
+                case "registerUser":
+                case "getAllUsers":
+                    $this->execute(new User(), $data);
+                    break;
+                default:
+                    $this->result = ['Error' => 'This methond ' . $this->action . 'not exist' ];
+                    break;  
+            }
+        } else {
+            $this->action = 'openOriginalLink';
+            $this->execute(new ShortUrlController(), $data);
         }
+      
+
     }
 
     public function execute($class, $l)

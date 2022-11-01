@@ -103,7 +103,7 @@ class ShortUrlController
     public function openOriginalLink()
     {
         $originalLink = $this->url->getOriginalLink();
-        if ($originalLink == false) {
+        if ($originalLink === false) {
             header("Location: https://www.google.com/");
         }else{
             header("Location: ".  $originalLink);
