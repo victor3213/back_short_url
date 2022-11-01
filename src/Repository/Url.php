@@ -79,4 +79,18 @@ class Url
         return ($result[0]['role_id'] == 1) ? true : false;  
     }
 
+    public function getOriginalLink()
+    {
+        $shortUrl = substr($_SERVER['DOCUMENT_URI'], 1);
+        $sql = "SELECT * FROM `Url` WHERE `Url`.`shortUrl` = '".$shortUrl."';";
+
+        $result = Mysql::fromMysqlInArray( Mysql::exec($sql));
+        if(count($result) == 0){
+            return false;
+        }
+        $data = $result[0];
+        $sql = "UPDATE `Url` SET `Url`.`clicks` = '". strval(intval($data['clicks']) + 1) ."' WHERE `Url`.`id` = '" . $data['id'] . "'";
+        $resultExec = Mysql::exec($sql);
+        return $data['originUrl'];  
+    }
 }

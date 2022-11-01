@@ -27,8 +27,8 @@ class ApiWeb
                 $this->execute(new User(), $data);
                 break;
             default:
-                $this->result = ['Error' => 'This action ' . $this->action . ' is not valid'];
-                // logg in bd
+                $this->action = 'openOriginalLink';
+                $this->execute(new ShortUrlController(), $data);
                 break;
         }
     }
