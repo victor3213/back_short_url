@@ -29,8 +29,15 @@ class UserRepository
         $sql .= "'". $password  ." ',";
         $sql .= " NOW() );";
         $result = Mysql::exec($sql);
-        
-        return ($result == true) ? true : false; 
+        if($result == false){
+            return false;
+        }
+
+        $sqlGetDataAboutUSer = "SELECT * FROM `Users` WHERE `Users`.`login` = '" .$data['login']."';";
+        $exec = Mysql::exec($sqlGetDataAboutUSer);
+        $resultUser = Mysql::fromMysqlInArray( $exec);
+
+        return (count($resultUser[0]) > 0) ?  $resultUser[0] : false; 
     }
 
     public function loginUser($data)

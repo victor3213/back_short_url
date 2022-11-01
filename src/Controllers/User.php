@@ -22,12 +22,12 @@ class User
                 'Message' => "This Login is taken, chose another login",
             ];
         }
-        if($this->userRep->insertUser($data)){
-            
+        $user = $this->userRep->insertUser($data); 
+        if($user != false){
             return [
                 'Status' => 'Success',
                 'Message' => 'Usere Loged',
-                'data' => $data
+                'data' => $user
             ];
         }
         return [
