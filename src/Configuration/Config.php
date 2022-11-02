@@ -13,4 +13,6 @@ class Config
     static $port = '90';
 
     static $hostPort = 'http://167.235.192.111:90/';
+    
+    static $code = 'tomandjery';
 }

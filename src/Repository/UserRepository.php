@@ -17,9 +17,9 @@ class UserRepository
         }
     }
 
-    public function insertUser($data)
+    public function insertUser($data, $token)
     {
-        $sql = "INSERT INTO `Users` (`login`, `firstName`, `lastName`, `role_id`, `password`, `datetime`) ";
+        $sql = "INSERT INTO `Users` (`login`, `firstName`, `lastName`, `role_id`, `password`, `datetime`, `token`) ";
         $password = $this->hashPassword($data['password']);
 
         $sql .= "VALUES ( '" . $data['login'] ."',";
@@ -27,17 +27,14 @@ class UserRepository
         $sql .= "'". $data['lastName']  ." ',";
         $sql .= "'". $data['role']  ." ',";
         $sql .= "'". $password  ." ',";
-        $sql .= " NOW() );";
+        $sql .= " NOW() ,";
+        $sql .= "'" . $token . "');";
         $result = Mysql::exec($sql);
+
         if($result == false){
             return false;
         }
-
-        $sqlGetDataAboutUSer = "SELECT * FROM `Users` WHERE `Users`.`login` = '" .$data['login']."';";
-        $exec = Mysql::exec($sqlGetDataAboutUSer);
-        $resultUser = Mysql::fromMysqlInArray( $exec);
-
-        return (count($resultUser[0]) > 0) ?  $resultUser[0] : false; 
+        return true;
     }
 
     public function loginUser($data)
@@ -103,5 +100,15 @@ class UserRepository
         $resultExec = Mysql::exec($sql);
 
         return ($resultExec) ? true : false;
+    }
+
+    public function insertTokenToUser($userID, $token)
+    {
+        $sql = "INSERT INTO `Users` (`token`) VALUES ('". $token ."') WHERE `Users`.`id` = '". $userID ."'";
+        $result = Mysql::exec($sql);
+        if($result == true){
+            return true;
+        }
+        return false;
     }
 }
