@@ -45,7 +45,7 @@ class User
 
     public function loginUser($data)
     {
-        if(isset($data['login']) && isset($data['password'])){
+        if(!isset($data['login']) && !isset($data['password'])){
             return [
                 'Status' => 'Error',
                 'Message' => "The login or password is missing",
@@ -70,8 +70,8 @@ class User
                 'Message' => "Can't registrate you in my sistem",
             ];
         }
-        $user['token'] = $token;
 
+        $user['token'] = $token;
         return [
             'Status' => 'Success',
             'Message' => 'Usere Loged',
