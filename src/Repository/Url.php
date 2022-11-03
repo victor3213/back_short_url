@@ -3,6 +3,7 @@
 namespace SRc\Repository;
 
 use SRC\DataBase\Mysql;
+use SRC\Repository\UserRepository;
 
 class Url 
 {
@@ -43,8 +44,7 @@ class Url
     public function getAllUrls($data)
     {
         $bonusPratameter = '';
-
-        if(isset($data['userId']) && $data['all'] == false){
+        if(isset($data['all']) && $data['all'] == false){
             $bonusPratameter .= "WHERE `UserUrl`.`idUser` = '" . $data['userId']. "'" ;
         }
 

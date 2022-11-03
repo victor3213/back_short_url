@@ -8,8 +8,8 @@
 			"DataBase/Mysql.php",
 			"Repository/Url.php",
 			"Controllers/User.php",
-			"Repository/UserRepository.php"
-
+			"Repository/UserRepository.php",
+            "Controllers/TokenController.php"
         ]
     }
 }
