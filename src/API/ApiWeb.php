@@ -4,6 +4,7 @@ namespace SRC\API;
 
 use SRC\Controller\ShortUrlController;
 use SRC\Controller\User;
+use SRC\Controller\TBlockIp;
 
 class ApiWeb 
 {
@@ -12,6 +13,8 @@ class ApiWeb
 
     function __construct($dataGet, $dataPost)
     {
+        TBlockIp::checkIp();
+        
         $dataPost = json_decode($dataPost, true);
         $data = (empty($dataGet)) ? $dataPost : $dataGet;
         $this->action = isset($data['action']) ? $data['action'] : null;
