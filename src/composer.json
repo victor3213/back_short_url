@@ -9,7 +9,8 @@
 			"Repository/Url.php",
 			"Controllers/User.php",
 			"Repository/UserRepository.php",
-            "Controllers/TokenController.php"
+            "Controllers/TokenController.php",
+            "Controllers/BlockIp.php"
         ]
     }
 }
