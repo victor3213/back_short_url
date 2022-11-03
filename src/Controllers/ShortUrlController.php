@@ -4,30 +4,59 @@ namespace SRC\Controller;
 
 use SRC\Repository\Url;
 use SRC\Configuration\Config;
-
+use SRC\Controller\TokenController;
+use SRC\Repository\UserRepository;
 class ShortUrlController
 {
     private $url;
 
+    private $token;
+
+    private $userRep;
+
     public function __construct()
     {
         $this->url = new Url();
+        $this->token = new TokenController();
+        $this->userRep = new UserRepository();
     }
 
     public function getShortUrl($data)
     {
+        if (!isset($data['longUrl']) ) {
+            return [
+                'Status' => 'Error',
+                'Message' => 'Empty Url' 
+            ];
+        }
+
         if(!$this->checkUrlIsValid($data['longUrl'])){
-            return ['Error' => 'The Url is not valid'];
+            return [
+                'Status' => 'Error',
+                'Message' => 'The Url is not valid' 
+            ];
         }
-        $nameShortUrl = '';
-        if(isset($data['typeOfUrl'])){
-            if($data['typeOfUrl'] == 'simple'){
-                $nameShortUrl = $this->generateRandomName();
-            } else {
-                $nameShortUrl = $data['nameUrl'];
+        $userId = '';
+        if(isset($data['token'])){
+            $userData = $this->userRep->checkUserWithToken($data['token']);
+            if(!$this->token->checkToken($data['token'])  || $userData == false){
+                return [
+                    'Status' => 'Error',
+                    'Message' => 'Something is wrong, try again later'
+                ];
             }
+            $userId = $userData[0]['id'];
         }
-        $userId = isset($data['userId']) ? $data['userId'] : 0;
+        
+        $nameShortUrl = '';
+        
+        if(!isset($data['typeOfUrl']) || $data['typeOfUrl'] == 'simple'){
+            $nameShortUrl = $this->generateRandomName();
+        } else {
+            $nameShortUrl = $data['nameUrl'];
+        }
+
+        $userId = !empty($userId) ? $userId : -1;
         $prepareData = [
             'userId' => $userId,
             'nameShortUrl' => $nameShortUrl,
@@ -85,8 +114,22 @@ class ShortUrlController
 
     public function getUrls($data)
     {
+        if(!isset($data['token']) && !isset($data['all'])){
+            return [
+                'Status' => 'Error',
+                'Message' => 'Something is not right' 
+            ];
+        }
+        $userData = $this->userRep->checkUserWithToken($data['token']);
+        if(!$this->token->checkToken($data['token'])  || $userData == false){
+            return [
+                'Status' => 'Error',
+                'Message' => 'Something is wrong, try again later'
+            ];
+        }
+        $data['userId'] = $userData[0]['id'];
         $allUrls = $this->url->getAllUrls($data);
-        // var_dump($allUrls);exit;
+
         if($allUrls == false){
             return [
                 'Status' => 'Error',

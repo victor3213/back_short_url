@@ -17,27 +17,28 @@ class UserRepository
         }
     }
 
-    public function insertUser($data)
+    public function insertUser($data, $token)
     {
-        $sql = "INSERT INTO `Users` (`login`, `firstName`, `lastName`, `role_id`, `password`, `datetime`) ";
-        $password = $this->hashPassword($data['password']);
+        try {
+            $sql = "INSERT INTO `Users` (`login`, `firstName`, `lastName`, `role_id`, `password`, `datetime`, `token`) ";
+            
+            $password = $this->hashPassword($data['password']);
 
-        $sql .= "VALUES ( '" . $data['login'] ."',";
-        $sql .= "'". $data['firstName']  ." ',";
-        $sql .= "'". $data['lastName']  ." ',";
-        $sql .= "'". $data['role']  ." ',";
-        $sql .= "'". $password  ." ',";
-        $sql .= " NOW() );";
-        $result = Mysql::exec($sql);
+            $sql .= "VALUES ( '" . $data['login'] ."',";
+            $sql .= "'". $data['firstName']  ." ',";
+            $sql .= "'". $data['lastName']  ." ',";
+            $sql .= "'". $data['role']  ." ',";
+            $sql .= "'". $password  ." ',";
+            $sql .= " NOW() ,";
+            $sql .= "'" . json_encode($token) . "');";
+            $result = Mysql::exec($sql);
+        } catch (\Throwable $th) {
+            return false;
+        }
         if($result == false){
             return false;
         }
-
-        $sqlGetDataAboutUSer = "SELECT * FROM `Users` WHERE `Users`.`login` = '" .$data['login']."';";
-        $exec = Mysql::exec($sqlGetDataAboutUSer);
-        $resultUser = Mysql::fromMysqlInArray( $exec);
-
-        return (count($resultUser[0]) > 0) ?  $resultUser[0] : false; 
+        return true;
     }
 
     public function loginUser($data)
@@ -103,5 +104,27 @@ class UserRepository
         $resultExec = Mysql::exec($sql);
 
         return ($resultExec) ? true : false;
+    }
+
+    public function insertTokenToUser($userID, $token)
+    {
+        $sql = "UPDATE `Users` SET `Users`.`token` = '". json_encode($token) ."' WHERE `Users`.`id` = '". $userID ."'";
+        $result = Mysql::exec($sql);
+        if($result == true){
+            return true;
+        }
+        return false;
+    }
+
+    public function checkUserWithToken($token)
+    {
+        $sql = "SELECT `Users`.`id` FROM `Users` WHERE `Users`.`token` = '". $token ."'";
+
+        $resultExec = Mysql::exec($sql);
+
+        $result = Mysql::fromMysqlInArray($resultExec);
+        if(count($result) == 0) return false;
+        
+        return $result;
     }
 }
