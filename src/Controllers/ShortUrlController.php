@@ -53,6 +53,12 @@ class ShortUrlController
         if(!isset($data['typeOfUrl']) || $data['typeOfUrl'] == 'simple'){
             $nameShortUrl = $this->generateRandomName();
         } else {
+            if( $this->url->checkName($data['nameUrl'])){
+                return [
+                    'Status' => 'Error',
+                    'Message' => 'This ' .$data['nameUrl'] . ' name is taken'
+                ];
+            }
             $nameShortUrl = $data['nameUrl'];
         }
 

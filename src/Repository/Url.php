@@ -93,4 +93,14 @@ class Url
         $resultExec = Mysql::exec($sql);
         return $data['originUrl'];  
     }
+
+    public function checkName($nameCustom)
+    {
+        $sql = "SELECT `Url`.`shortUrl` FROM `Url` WHERE `Url`.`shortUrl` = '".$nameCustom."' LIMIT 1;";
+
+        $resultExec = Mysql::exec($sql);
+        $result = Mysql::fromMysqlInArray($resultExec);
+
+        return (count($result) == 0) ? false : true;
+    }
 }
