@@ -19,18 +19,22 @@ class UserRepository
 
     public function insertUser($data, $token)
     {
-        $sql = "INSERT INTO `Users` (`login`, `firstName`, `lastName`, `role_id`, `password`, `datetime`, `token`) ";
-        $password = $this->hashPassword($data['password']);
+        try {
+            $sql = "INSERT INTO `Users` (`login`, `firstName`, `lastName`, `role_id`, `password`, `datetime`, `token`) ";
+            
+            $password = $this->hashPassword($data['password']);
 
-        $sql .= "VALUES ( '" . $data['login'] ."',";
-        $sql .= "'". $data['firstName']  ." ',";
-        $sql .= "'". $data['lastName']  ." ',";
-        $sql .= "'". $data['role']  ." ',";
-        $sql .= "'". $password  ." ',";
-        $sql .= " NOW() ,";
-        $sql .= "'" . $token . "');";
-        $result = Mysql::exec($sql);
-
+            $sql .= "VALUES ( '" . $data['login'] ."',";
+            $sql .= "'". $data['firstName']  ." ',";
+            $sql .= "'". $data['lastName']  ." ',";
+            $sql .= "'". $data['role']  ." ',";
+            $sql .= "'". $password  ." ',";
+            $sql .= " NOW() ,";
+            $sql .= "'" . json_encode($token) . "');";
+            $result = Mysql::exec($sql);
+        } catch (\Throwable $th) {
+            return false;
+        }
         if($result == false){
             return false;
         }
@@ -104,11 +108,23 @@ class UserRepository
 
     public function insertTokenToUser($userID, $token)
     {
-        $sql = "INSERT INTO `Users` (`token`) VALUES ('". $token ."') WHERE `Users`.`id` = '". $userID ."'";
+        $sql = "UPDATE `Users` SET `Users`.`token` = '". json_encode($token) ."' WHERE `Users`.`id` = '". $userID ."'";
         $result = Mysql::exec($sql);
         if($result == true){
             return true;
         }
         return false;
+    }
+
+    public function checkUserWithToken($token)
+    {
+        $sql = "SELECT `Users`.`id` FROM `Users` WHERE `Users`.`token` = '". $token ."'";
+
+        $resultExec = Mysql::exec($sql);
+
+        $result = Mysql::fromMysqlInArray($resultExec);
+        if(count($result) == 0) return false;
+        
+        return $result;
     }
 }
